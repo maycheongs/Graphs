@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import '../App.css';
-import Chart from '../components/Chart';
+import LChart from '../components/Chart/LChart';
 
 const title = 'Area Chart';
 
@@ -99,7 +99,7 @@ const optionsImpressions = {
 
 storiesOf('Daily Stats', module)
   .add('Revenue chart', () => (
-    <Chart
+    <LChart
       type={'weekly'}
       baseOptions={optionsRevenue}
       data={data}
@@ -110,7 +110,7 @@ storiesOf('Daily Stats', module)
     />
   ))
   .add('Clicks chart', () => (
-    <Chart
+    <LChart
       type={'weekly'}
       baseOptions={optionsClicks}
       data={data}
@@ -120,7 +120,7 @@ storiesOf('Daily Stats', module)
     />
   ))
   .add('Impressions Chart', () => (
-    <Chart
+    <LChart
       type={'weekly'}
       baseOptions={optionsImpressions}
       data={data}
@@ -134,7 +134,7 @@ storiesOf('Daily Stats', module)
     />
   ))
   .add('Revenue and Clicks',() => (
-    <Chart
+    <LChart
     type={'weekly'}
     baseOptions={optionsRevenue}
     data={data}
@@ -146,7 +146,7 @@ storiesOf('Daily Stats', module)
     />
   ))
   .add('Revenue and Impressions',() => (
-    <Chart
+    <LChart
     type={'weekly'}
     baseOptions={optionsRevenue}
     data={data}
@@ -158,7 +158,7 @@ storiesOf('Daily Stats', module)
     />
   ))
   .add('Clicks and Impressions',() => (
-    <Chart
+    <LChart
     type={'weekly'}
     baseOptions={optionsClicks}
     data={data}
@@ -1350,7 +1350,7 @@ const hourlyData = [
 ];
 
 storiesOf('Hourly Stats', module).add('Revenue chart', () => (
-  <Chart
+  <LChart
     type={'daily'}
     data={hourlyData}
     dataKeyX={'hour'}    
