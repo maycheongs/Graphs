@@ -17,14 +17,20 @@ import dayjs from 'dayjs';
 export default function Chart(props) {
   const {
     data,
-    lineDataKey,
     dataKeyX,
     formatX,
-    YtickFormatter,
     tooltipX,
     formatToolTip,
-    color,
+    secOptions,
   } = props;
+
+  const {
+    color,
+    lineDataKey,
+    YtickFormatter,
+    YAxisLabel,
+    domain,
+  } = props.baseOptions;
 
   const tickFormatter = (tick) => {
     return (YtickFormatter && YtickFormatter(tick)) || tick;
@@ -87,6 +93,7 @@ export default function Chart(props) {
           }}
         >
           <CartesianGrid strokeDasharray='3 3' vertical={false} />
+          {secOptions && <Legend verticalAlign='top' height={36} />}
           <XAxis
             dataKey={dataKeyX}
             tickFormatter={XAxisTickFormatter}
@@ -98,11 +105,11 @@ export default function Chart(props) {
           <YAxis
             yAxisId={1}
             dy={5}
-            domain={props.domain || [0, 'auto']}
+            domain={domain || [0, 'auto']}
             tickFormatter={tickFormatter}
             label={
-              (props.YAXisLabel && {
-                value: props.YAXisLabel,
+              (YAxisLabel && {
+                value: YAxisLabel,
                 position: 'top',
               }) ||
               null
@@ -112,32 +119,41 @@ export default function Chart(props) {
             yAxisId={1}
             dataKey={lineDataKey}
             stroke={color}
-            strokeWidth={2}
+            strokeWidth={3}
             fill={color}
             dot={false}
           />
           {/* <Brush dataKey='date' tickFormatter={formatX} height={30} /> */}
-          <YAxis
-            yAxisId={2}
-            dy={5}
-            // domain={props.domain || [0, 'auto']}
-            // tickFormatter={tickFormatter}
-            label={
-              (props.YAXisLabel && {
-                value: props.YAXisLabel,
-                position: 'top',
-              }) ||
-              null
-            }
-          />
-          <Line
-            yAxisId={2}
-            dataKey={'clicks'}
-            stroke={color}
-            strokeWidth={2}
-            fill={color}
-            dot={false}
-          />
+          {secOptions && (
+            <YAxis
+              yAxisId={2}
+              dy={5}
+              domain={secOptions.domain || [0, 'auto']}
+              tickFormatter={(tick) =>
+                (secOptions.YtickFormatter &&
+                  secOptions.YtickFormatter(tick)) ||
+                tick
+              }
+              label={
+                (secOptions.YAxisLabel && {
+                  value: secOptions.YAxisLabel,
+                  position: 'top',
+                }) ||
+                null
+              }
+              orientation='right'
+            />
+          )}
+          {secOptions && (
+            <Line
+              yAxisId={2}
+              dataKey={secOptions.lineDataKey}
+              stroke={secOptions.color}
+              strokeWidth={2}
+              fill={secOptions.color}
+              dot={false}
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>
