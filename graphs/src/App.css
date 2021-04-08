@@ -2,3 +2,12 @@
 .chart {
   height: 300px;
 }
+
+.switch_week {
+  display:flex;
+  justify-content: flex-end;
+}
+
+.week {
+  margin: 0 5px
+}

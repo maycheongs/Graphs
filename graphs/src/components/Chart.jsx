@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {
   AreaChart,
   Area,
@@ -9,6 +10,7 @@ import {
   Brush,
   ResponsiveContainer,
 } from 'recharts';
+import dayjs from 'dayjs';
 
 export default function Chart(props) {
   const {
@@ -28,13 +30,37 @@ export default function Chart(props) {
   const toolTipFormatter = (value, name, props) => {
     return (formatToolTip && formatToolTip(value)) || value;
   };
+  const XAxisTickFormatter = tick => {
+    return (formatX && formatX(tick)) || tick;
+  }
+
+  const [periodIndex, usePeriod] = useState(0)
+  const chartInterval = props.type === 'weekly' ? 7 : 24
+  const dateConverter = date => {
+    const d = dayjs(date)
+    return d.format('MMM DD, YYYY')    
+  }
+
+
   return (
     <div className='chart'>
-      <ResponsiveContainer width='70%' height={500}>
+      {props.type === 'weekly' && 
+      <div className='switch_week'>
+        <button>&#8592;</button>
+        <div className='week'>
+        {`${dateConverter(data[periodIndex].date)} - ${dateConverter(data[periodIndex + 6].date)}`}
+        </div>
+        <button>&#8594;</button>
+      </div>}
+      {props.type === 'daily' &&
+      <div></div>
+
+      }
+      <ResponsiveContainer width='70%' height={300}>
         <AreaChart
           width={500}
           height={200}
-          data={data}
+          data={data.slice(periodIndex, periodIndex + chartInterval)}
           syncId='anyId'
           margin={{
             top: 50,
@@ -44,7 +70,7 @@ export default function Chart(props) {
           }}
         >
           <CartesianGrid strokeDasharray='3 3' vertical={false} />
-          <XAxis dataKey={dataKeyX} tickFormatter={formatX} dx={5} />
+          <XAxis dataKey={dataKeyX} tickFormatter={XAxisTickFormatter} dx={5} padding={{right:5}}/>
           <Tooltip labelFormatter={tooltipX} formatter={toolTipFormatter} />
 
           <YAxis
@@ -52,7 +78,7 @@ export default function Chart(props) {
             domain={props.domain || [0, 'auto']}
             tickFormatter={tickFormatter}
             label={
-              (props.label && { value: props.label, position: 'top' }) || null
+              (props.YAXisLabel && { value: props.YAXisLabel, position: 'top' }) || null
             }
           />
           <Area dataKey={areaDataKey} stroke={color} fill={color} />
