@@ -1,8 +1,46 @@
 
+nav.top_nav {
+background-color: #323030 ;
+height:10vh;
+width: 100%;
+}
+main {  
+  display:flex;
+}
+nav.side_nav {
+  margin:10px;
+  background-color: #fcfcfc;
+  width: 200px;
+}
+section {
+  width: 80%;
+  margin:10px;  
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chart_area {
+  background-color: #fcfcfc;
+  padding: 2em;
+}
+.stat_boxes {
+  display:flex;  
+}
+
+.statbox {
+  margin: 20px;
+  display:flex;
+  flex-direction: column;
+}
+.statbox span {
+  display: inline-block;
+  margin-top: 4px;
+  font-size:1.5em;
+}
 .chart {
   height: 300px;
 }
-
 .switch_period {
   display:flex;
   justify-content: flex-end;
@@ -10,4 +48,14 @@
 
 .week {
   margin: 0 5px
+}
+
+.data_table {
+  background-color: #fcfcfc;
+  padding: 2em;
+  margin-top: 10px;
+  height: 50vh;
+}
+.table_header {
+  display:flex;
 }
