@@ -73,7 +73,7 @@ const data = dataBuffer.map((object) => {
 const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g,'$1,')
 
 
-storiesOf('Area Chart', module)
+storiesOf('Daily Stats', module)
 .add('Revenue chart',() => (
   <Chart
   data={data}
@@ -81,6 +81,15 @@ storiesOf('Area Chart', module)
   tooltipX={fullDateConvert}
   color={'#ddbc95'}
   areaDataKey={'revenue'}
+  dataKeyX={'date'}/>
+))
+.add('Clicks chart',() => (
+  <Chart
+  data={data}
+  formatX={dateConvert}
+  tooltipX={fullDateConvert}
+  color={'#b38867'}
+  areaDataKey={'clicks'}
   dataKeyX={'date'}/>
 ))
 .add('Impressions Chart', () => (
