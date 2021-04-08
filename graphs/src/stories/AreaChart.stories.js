@@ -71,7 +71,20 @@ const data = dataBuffer.map((object) => {
 });
 // format large number to split thousands with comma
 const formatNumber = num => num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g,'$1,')
+//round to 2 decimal places
+const roundNumber =num => Math.round(num*100)/100
 
+const formatToolTip = (v,n,p) => {
+  if(n === 'impressions') return formatNumber(v)
+  if(n === 'revenue') return roundNumber(v)
+  return v
+}
+
+const optionsRevenue = {
+color: '#882426',
+lineDataKey: 'revenue',
+
+}
 
 storiesOf('Daily Stats', module)
 .add('Revenue chart',() => (
@@ -79,10 +92,11 @@ storiesOf('Daily Stats', module)
   type={'weekly'}
   color={'#882426'}
   data={data}
-  areaDataKey={'revenue'}
+  lineDataKey={'revenue'}
   dataKeyX={'date'}
   formatX={dateConvert}
   tooltipX={fullDateConvert}
+  formatToolTip={formatToolTip}
   />
 ))
 .add('Clicks chart',() => (
@@ -90,7 +104,7 @@ storiesOf('Daily Stats', module)
   type={'weekly'}
   color={'#c29545'}
   data={data}
-  areaDataKey={'clicks'}
+  lineDataKey={'clicks'}
   dataKeyX={'date'}
   formatX={dateConvert}
   tooltipX={fullDateConvert}
@@ -101,11 +115,11 @@ storiesOf('Daily Stats', module)
   type={'weekly'}
   color={'#323030'}
   data={data}
-  areaDataKey={'impressions'}
+  lineDataKey={'impressions'}
   dataKeyX={'date'}
   formatX={dateConvert}
   tooltipX={fullDateConvert}
-  formatToolTip={formatNumber}
+  formatToolTip={formatToolTip}
   YtickFormatter={(tick => tick/1000)}
   domain={[0, 3000000]}
   YAXisLabel=',000'
@@ -1300,7 +1314,7 @@ storiesOf('Hourly Stats', module)
   type={'daily'}
   color={'#882426'}
   data={hourlyData}
-  areaDataKey={'revenue'}
+  lineDataKey={'revenue'}
   dataKeyX={'hour'}
   domain={[0,1000]}
   formatX={(x)=> `0${x}:00`.slice(-5)}
