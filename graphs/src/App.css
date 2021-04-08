@@ -3,7 +3,7 @@
   height: 300px;
 }
 
-.switch_week {
+.switch_period {
   display:flex;
   justify-content: flex-end;
 }

@@ -34,26 +34,36 @@ export default function Chart(props) {
     return (formatX && formatX(tick)) || tick;
   }
 
-  const [periodIndex, usePeriod] = useState(0)
+  const [periodIndex, setPeriodIndex] = useState(0)
   const chartInterval = props.type === 'weekly' ? 7 : 24
-  const dateConverter = date => {
-    const d = dayjs(date)
-    return d.format('MMM DD, YYYY')    
+  //format dateString to MMM DD, YYYY
+  const dateConverter1 = date => dayjs(date).format('MMM DD, YYYY')    
+  //format dateString to YYYY-MM-DD
+  const dateConverter2 = date => dayjs(date).format('YYYY-MM-DD')
+  
+  const [date, setDate] = useState(dateConverter2(data[periodIndex].date))
+  const changeDate = (event) => {
+     setDate(event.target.value)
+     const newIndex = data.findIndex(obj => dateConverter2(obj.date) === event.target.value)
+     setPeriodIndex(newIndex)
+     console.log('periodIndex', periodIndex)
   }
 
 
   return (
     <div className='chart'>
       {props.type === 'weekly' && 
-      <div className='switch_week'>
+      <div className='switch_period'>
         <button>&#8592;</button>
         <div className='week'>
-        {`${dateConverter(data[periodIndex].date)} - ${dateConverter(data[periodIndex + 6].date)}`}
+        {`${dateConverter1(data[periodIndex].date)} - ${dateConverter1(data[periodIndex + 6].date)}`}
         </div>
         <button>&#8594;</button>
       </div>}
       {props.type === 'daily' &&
-      <div></div>
+      <div className='switch_period'>
+        <input type='date' value={date} onChange={changeDate} min={dateConverter2(data[0].date)} max={dateConverter2(data[data.length -1].date)}></input>
+      </div>
 
       }
       <ResponsiveContainer width='70%' height={300}>

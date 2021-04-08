@@ -1303,6 +1303,9 @@ storiesOf('Hourly Stats', module)
   areaDataKey={'revenue'}
   dataKeyX={'hour'}
   domain={[0,1000]}
+  formatX={(x)=> `0${x}:00`.slice(-5)}
+  tooltipX={(x)=> `0${x}:00`.slice(-5)}
+  formatToolTip={num => Math.round(num*100)/100}
 
   />
 ))
