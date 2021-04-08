@@ -14,7 +14,7 @@ import {
 } from 'recharts';
 import dayjs from 'dayjs';
 
-export default function Chart(props) {
+export default function LChart(props) {
   const {
     data,
     dataKeyX,
