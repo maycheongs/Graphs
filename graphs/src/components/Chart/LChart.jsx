@@ -79,7 +79,7 @@ export default function LChart(props) {
           ></input>
         </div>
       )}
-      <ResponsiveContainer width='70%' height={300}>
+      <ResponsiveContainer width='90%' height={300}>
         <LineChart
           width={500}
           height={200}
@@ -97,7 +97,8 @@ export default function LChart(props) {
           <XAxis
             dataKey={dataKeyX}
             tickFormatter={XAxisTickFormatter}
-            dx={5}
+            dx={10}
+            dy={5}
             padding={{ right: 5 }}
           />
           <Tooltip labelFormatter={tooltipX} formatter={formatToolTip} />

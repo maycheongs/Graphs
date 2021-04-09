@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import LChart from './LChart';
 import dayjs from 'dayjs';
 export default function Chart(props) {
@@ -65,7 +66,7 @@ export default function Chart(props) {
     if (n === 'revenue') return roundNumber(v);
     return v;
   };
-  const dateConvert = (date) => dayjs(date).format('mm/dd');
+  const dateConvert = (date) => dayjs(date).format('MM/DD');
   const fullDateConvert = (date) => dayjs(date).format('D MMM, YYYY');
 
   const optionsRevenue = {
@@ -86,25 +87,27 @@ export default function Chart(props) {
 
   let totalClicks = data.reduce((acc, obj) => acc + obj.clicks, 0);
   let totalImpressions = data.reduce((acc, obj) => acc + obj.impressions, 0);
-  totalImpressions = totalImpressions.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  totalImpressions = totalImpressions
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   let totalRevenue = data.reduce((acc, obj) => acc + obj.revenue, 0);
-  totalRevenue = Math.round(totalRevenue)
+  totalRevenue = Math.round(totalRevenue);
 
-  console.log(totalClicks);
+  
 
   return (
     <div className='chart_area'>
       <div className='stat_boxes'>
         <div className='statbox'>
-          Clicks
+          Clicks:
           <span>{totalClicks}</span>
         </div>
         <div className='statbox'>
-          Impressions
+          Impressions:
           <span>{totalImpressions}</span>
         </div>
         <div className='statbox'>
-          Revenue
+          Revenue:
           <span>{totalRevenue}</span>
         </div>
       </div>
@@ -113,14 +116,20 @@ export default function Chart(props) {
         <button>Daily</button>
       </div>
       <div className='chart_option'>
-<button className='clicks_option'>Clicks</button><button className='impressions_option'>Impressions</button><button className='revenue_option'>Revenue</button>
+        <button className='clicks_option'>Clicks</button>
+        <button className='impressions_option'>Impressions</button>
+        <button className='revenue_option'>Revenue</button>
       </div>
       <div className='chart_comparison'>
+        vs &nbsp;
         <select name='comparison'>
-        <option selected value> -- select an option -- </option> 
+          <option selected value>
+            {' '}
+            -- select an option --{' '}
+          </option>
         </select>
-        </div>     
-      
+      </div>
+
       <LChart
         type={'weekly'}
         baseOptions={optionsClicks}
