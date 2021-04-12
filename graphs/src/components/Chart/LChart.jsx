@@ -24,7 +24,7 @@ export default function LChart(props) {
     secOptions,
   } = props;
 
-  const {
+ const {
     color,
     lineDataKey,
     YtickFormatter,
@@ -45,6 +45,7 @@ export default function LChart(props) {
   const dateConverter1 = (date) => dayjs(date).format('MMM DD, YYYY');
   //format dateString to YYYY-MM-DD
   const dateConverter2 = (date) => dayjs(date).format('YYYY-MM-DD');
+  const dateConverter3 = (date) => dayjs(date).format('MMM DD');
 
   const [date, setDate] = useState(dateConverter2(data[periodIndex].date));
   const changeDate = (event) => {
@@ -57,7 +58,7 @@ export default function LChart(props) {
 
   return (
     <div className='chart'>
-      {props.type === 'weekly' && (
+      {/* {props.type === 'weekly' && (
         <div className='switch_period'>
           <button>&#8592;</button>
           <div className='week'>
@@ -78,12 +79,12 @@ export default function LChart(props) {
             max={dateConverter2(data[data.length - 1].date)}
           ></input>
         </div>
-      )}
+      )} */}
       <ResponsiveContainer width='90%' height={300}>
         <LineChart
           width={500}
           height={200}
-          data={data.slice(periodIndex, periodIndex + chartInterval)}
+          data={data}
           syncId='anyId'
           margin={{
             top: 50,
@@ -95,12 +96,26 @@ export default function LChart(props) {
           <CartesianGrid strokeDasharray='3 3' vertical={false} />
           {secOptions && <Legend verticalAlign='top' height={36} />}
           <XAxis
+            xAxisId={0}
             dataKey={dataKeyX}
             tickFormatter={XAxisTickFormatter}
             dx={10}
             dy={5}
             padding={{ right: 5 }}
           />
+          {props.type === 'daily' && (
+            <XAxis
+              xAxisId={1}
+              dataKey='date'
+              tickFormatter={dateConverter3}
+              interval={24}
+              axisLine={false}
+              tickLine={false}
+              dx={10}
+              dy={-5}
+              padding={{ right: 5 }}
+            />
+          )}
           <Tooltip labelFormatter={tooltipX} formatter={formatToolTip} />
 
           <YAxis
@@ -124,7 +139,13 @@ export default function LChart(props) {
             fill={color}
             dot={false}
           />
-          {/* <Brush dataKey='date' tickFormatter={formatX} height={30} /> */}
+          {props.type === 'daily' && (
+            <Brush 
+            dataKey='date'
+            endIndex={48} 
+            tickFormatter={(x) => ''} 
+            height={15} />
+          )}
           {secOptions && (
             <YAxis
               yAxisId={2}

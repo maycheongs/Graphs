@@ -1,7 +1,40 @@
-import {useState} from 'react'
+import {useState,useEffect} from 'react'
 import LChart from './LChart';
 import dayjs from 'dayjs';
+import axios from 'axios'
+
 export default function Chart(props) {
+
+  const [weeklyData, setWeeklyData] = useState();
+  const [hourlyData, setHourlyData] = useState();
+  const [chartType, setChartType] = useState('weekly');
+
+  const optionsRevenue = {
+    color: '#882426',
+    lineDataKey: 'revenue',
+  };
+  const optionsClicks = {
+    color: '#c29545',
+    lineDataKey: 'clicks',
+  };
+  const optionsImpressions = {
+    color: '#323030',
+    lineDataKey: 'impressions',
+    YtickFormatter: (tick) => tick / 1000,
+    domain: [0, 3000000],
+    YAxisLabel: ',000',
+  };
+
+  const [chartOptions, setChartOptions] = useState(optionsClicks)
+
+useEffect(() => {
+  axios.get('stats/daily').then(res => setWeeklyData(res.data))
+},[])
+
+const getHourlyData = () => {
+  return axios.get('stats/hourly').then(res => setHourlyData(res.data))
+}
+
   const dataBuffer = [
     {
       date: '2017-01-01T05:00:00.000Z',
@@ -69,22 +102,6 @@ export default function Chart(props) {
   const dateConvert = (date) => dayjs(date).format('MM/DD');
   const fullDateConvert = (date) => dayjs(date).format('D MMM, YYYY');
 
-  const optionsRevenue = {
-    color: '#882426',
-    lineDataKey: 'revenue',
-  };
-  const optionsClicks = {
-    color: '#c29545',
-    lineDataKey: 'clicks',
-  };
-  const optionsImpressions = {
-    color: '#323030',
-    lineDataKey: 'impressions',
-    YtickFormatter: (tick) => tick / 1000,
-    domain: [0, 3000000],
-    YAxisLabel: ',000',
-  };
-
   let totalClicks = data.reduce((acc, obj) => acc + obj.clicks, 0);
   let totalImpressions = data.reduce((acc, obj) => acc + obj.impressions, 0);
   totalImpressions = totalImpressions
@@ -97,6 +114,7 @@ export default function Chart(props) {
 
   return (
     <div className='chart_area'>
+      {weeklyData && <>
       <div className='stat_boxes'>
         <div className='statbox'>
           Clicks:
@@ -132,13 +150,14 @@ export default function Chart(props) {
 
       <LChart
         type={'weekly'}
-        baseOptions={optionsClicks}
-        data={data}
+        baseOptions={chartOptions}
+        data={weeklyData}
         dataKeyX={'date'}
         formatX={dateConvert}
         tooltipX={fullDateConvert}
         formatToolTip={formatToolTip}
       />
+      </>}
     </div>
   );
 }
