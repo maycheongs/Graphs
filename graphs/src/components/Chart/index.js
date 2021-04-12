@@ -7,7 +7,7 @@ import axios from 'axios';
 export default function Chart(props) {
   const [weeklyData, setWeeklyData] = useState();
   const [hourlyData, setHourlyData] = useState();
-  const [chartType, setChartType] = useState('weekly');
+  const [chartType, setChartType] = useState('daily');
 
   const optionsRevenue = {
     color: '#882426',
@@ -21,18 +21,47 @@ export default function Chart(props) {
     color: '#323030',
     lineDataKey: 'impressions',
     YtickFormatter: (tick) => tick / 1000,
-    domain: [0, 3000000],
     YAxisLabel: ',000',
   };
 
   const [chartOptions, setChartOptions] = useState(optionsClicks);
+  const clickOptions = (e) => {
+    setSelected(e.target.name);
+    switch (e.target.name) {
+      case 'clicks':
+        setChartOptions(optionsClicks);
+        break;
+      case 'impressions':
+        setChartOptions(optionsImpressions);
+        break;
+      case 'revenue':
+        setChartOptions(optionsRevenue);
+        break;      
+    }
+  };
+
+  const parseDataToNum = (data) => {
+    return data.map((object) => {
+      for (const key in object) {
+        if (!isNaN(object[key])) {
+          object[key] = Number(object[key]);
+        }
+      }
+      return object;
+    });
+  };
 
   useEffect(() => {
-    axios.get('stats/daily').then((res) => setWeeklyData(res.data));
+    axios
+      .get('stats/daily')
+      .then((res) => setWeeklyData(parseDataToNum(res.data)));
   }, []);
 
-  const getHourlyData = () => {
-    return axios.get('stats/hourly').then((res) => setHourlyData(res.data));
+  const getHourly = () => {
+    setChartType('hourly');
+    axios
+      .get('stats/hourly')
+      .then((res) => setHourlyData(parseDataToNum(res.data)));
   };
 
   const dataBuffer = [
@@ -88,6 +117,7 @@ export default function Chart(props) {
     }
     return object;
   });
+
   // format large number to split thousands with comma
   const formatNumber = (num) =>
     num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
@@ -137,23 +167,29 @@ export default function Chart(props) {
           </div>
           <div className='chart_option'>
             <button
+              name='clicks'
               className={classNames('clicks_option', 'option_btn', {
                 selected: selected === 'clicks',
               })}
+              onClick={clickOptions}
             >
               Clicks
             </button>
             <button
+              name='impressions'
               className={classNames('impressions_option', 'option_btn', {
                 selected: selected === 'impressions',
               })}
+              onClick={clickOptions}
             >
               Impressions
             </button>
             <button
+              name='revenue'
               className={classNames('revenue_option', 'option_btn', {
                 selected: selected === 'revenue',
               })}
+              onClick={clickOptions}
             >
               Revenue
             </button>
@@ -168,18 +204,29 @@ export default function Chart(props) {
                 </option>
               </select>
               <div className='chart_type'>
-                <button>Hourly</button>
-                <button>Daily</button>
+                <button onClick={getHourly}>Hourly</button>
+                <button onClick={() => setChartType('daily')}>Daily</button>
               </div>
             </div>
-            {chartType === 'weekly' && (
+            {chartType === 'daily' && (
               <LChart
-                type={'weekly'}
+                type={'daily'}
                 baseOptions={chartOptions}
                 data={weeklyData}
                 dataKeyX={'date'}
                 formatX={dateConvert}
                 tooltipX={fullDateConvert}
+                formatToolTip={formatToolTip}
+              />
+            )}
+            {chartType === 'hourly' && hourlyData && (
+              <LChart
+                type={'hourly'}
+                data={hourlyData}
+                dataKeyX={'hour'}
+                baseOptions={chartOptions}
+                formatX={(x) => `0${x}:00`.slice(-5)}
+                tooltipX={(x) => `0${x}:00`.slice(-5)}
                 formatToolTip={formatToolTip}
               />
             )}

@@ -65,6 +65,7 @@ cursor: pointer
 
 .chart {
   height: 300px;
+  padding-bottom: 1em;
 }
 
 .chart_display {  
@@ -86,6 +87,16 @@ cursor: pointer
 .clicks_option.selected {
   border-bottom: 3px solid #c29545;
   color: #c29545;
+  font-weight: bold;
+}
+.impressions_option.selected {
+  border-bottom: 3px solid #323030;
+  color: #323030;
+  font-weight: bold;
+}
+.revenue_option.selected {
+  border-bottom: 3px solid #882426;
+  color: #882426;
   font-weight: bold;
 }
 

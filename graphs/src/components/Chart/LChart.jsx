@@ -40,8 +40,7 @@ export default function LChart(props) {
   };
 
   const [periodIndex, setPeriodIndex] = useState(0);
-  const chartInterval = props.type === 'weekly' ? 7 : 24;
-  //format dateString to MMM DD, YYYY
+   //format dateString to MMM DD, YYYY
   const dateConverter1 = (date) => dayjs(date).format('MMM DD, YYYY');
   //format dateString to YYYY-MM-DD
   const dateConverter2 = (date) => dayjs(date).format('YYYY-MM-DD');
@@ -103,7 +102,7 @@ export default function LChart(props) {
             dy={5}
             padding={{ right: 5 }}
           />
-          {props.type === 'daily' && (
+          {props.type === 'hourly' && (
             <XAxis
               xAxisId={1}
               dataKey='date'
@@ -139,7 +138,7 @@ export default function LChart(props) {
             fill={color}
             dot={false}
           />
-          {props.type === 'daily' && (
+          {props.type === 'hourly' && (
             <Brush 
             dataKey='date'
             endIndex={48} 

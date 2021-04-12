@@ -92,26 +92,26 @@ const optionsClicks = {
 const optionsImpressions = {
   color: '#323030',
   lineDataKey: 'impressions',
-  YtickFormatter: ((tick) => tick / 1000),
-  domain: [0, 3000000],
+  YtickFormatter: (tick) => tick / 1000,
+  // domain: [0, 3000000],
   YAxisLabel: ',000',
 };
 
 storiesOf('Daily Stats', module)
   .add('Revenue chart', () => (
     <LChart
-      type={'weekly'}
+      type={'daily'}
       baseOptions={optionsRevenue}
       data={data}
       dataKeyX={'date'}
       formatX={dateConvert}
       tooltipX={fullDateConvert}
-      formatToolTip={formatToolTip}      
+      formatToolTip={formatToolTip}
     />
   ))
   .add('Clicks chart', () => (
     <LChart
-      type={'weekly'}
+      type={'daily'}
       baseOptions={optionsClicks}
       data={data}
       dataKeyX={'date'}
@@ -121,7 +121,7 @@ storiesOf('Daily Stats', module)
   ))
   .add('Impressions Chart', () => (
     <LChart
-      type={'weekly'}
+      type={'daily'}
       baseOptions={optionsImpressions}
       data={data}
       dataKeyX={'date'}
@@ -129,46 +129,46 @@ storiesOf('Daily Stats', module)
       tooltipX={fullDateConvert}
       formatToolTip={formatToolTip}
       YtickFormatter={(tick) => tick / 1000}
-      domain={[0, 3000000]}
+      // domain={[0, 3000000]}
       YAXisLabel=',000'
     />
   ))
-  .add('Revenue and Clicks',() => (
+  .add('Revenue and Clicks', () => (
     <LChart
-    type={'weekly'}
-    baseOptions={optionsRevenue}
-    data={data}
-    dataKeyX={'date'}
-    formatX={dateConvert}
-    tooltipX={fullDateConvert}
-    formatToolTip={formatToolTip}
-    secOptions={optionsClicks}
+      type={'daily'}
+      baseOptions={optionsRevenue}
+      data={data}
+      dataKeyX={'date'}
+      formatX={dateConvert}
+      tooltipX={fullDateConvert}
+      formatToolTip={formatToolTip}
+      secOptions={optionsClicks}
     />
   ))
-  .add('Revenue and Impressions',() => (
+  .add('Revenue and Impressions', () => (
     <LChart
-    type={'weekly'}
-    baseOptions={optionsRevenue}
-    data={data}
-    dataKeyX={'date'}
-    formatX={dateConvert}
-    tooltipX={fullDateConvert}
-    formatToolTip={formatToolTip}
-    secOptions={optionsImpressions}
+      type={'daily'}
+      baseOptions={optionsRevenue}
+      data={data}
+      dataKeyX={'date'}
+      formatX={dateConvert}
+      tooltipX={fullDateConvert}
+      formatToolTip={formatToolTip}
+      secOptions={optionsImpressions}
     />
   ))
-  .add('Clicks and Impressions',() => (
+  .add('Clicks and Impressions', () => (
     <LChart
-    type={'weekly'}
-    baseOptions={optionsClicks}
-    data={data}
-    dataKeyX={'date'}
-    formatX={dateConvert}
-    tooltipX={fullDateConvert}
-    formatToolTip={formatToolTip}
-    secOptions={optionsImpressions}
+      type={'daily'}
+      baseOptions={optionsClicks}
+      data={data}
+      dataKeyX={'date'}
+      formatX={dateConvert}
+      tooltipX={fullDateConvert}
+      formatToolTip={formatToolTip}
+      secOptions={optionsImpressions}
     />
-  ))
+  ));
 
 const hourlyData = [
   {
@@ -1347,16 +1347,47 @@ const hourlyData = [
     clicks: 39,
     revenue: '113.0830980000000',
   },
-];
+].map((object) => {
+  for (const key in object) {
+    if (!isNaN(object[key])) {
+      object[key] = Number(object[key]);
+    }
+  }
+  return object;
+});
 
-storiesOf('Hourly Stats', module).add('Revenue chart', () => (
-  <LChart
-    type={'daily'}
-    data={hourlyData}
-    dataKeyX={'hour'}    
-    baseOptions={{domain:[0,1000],...optionsRevenue}}
-    formatX={(x) => `0${x}:00`.slice(-5)}
-    tooltipX={(x) => `0${x}:00`.slice(-5)}
-    formatToolTip={(num) => Math.round(num * 100) / 100}
-  />
-));
+storiesOf('Hourly Stats', module)
+  .add('Revenue chart', () => (
+    <LChart
+      type={'hourly'}
+      data={hourlyData}
+      dataKeyX={'hour'}
+      baseOptions={optionsRevenue}
+      formatX={(x) => `0${x}:00`.slice(-5)}
+      tooltipX={(x) => `0${x}:00`.slice(-5)}
+      formatToolTip={formatToolTip}
+      formatToolTip={(num) => Math.round(num * 100) / 100}
+    />
+  ))
+  .add('Impressions chart', () => (
+    <LChart
+      type={'hourly'}
+      data={hourlyData}
+      dataKeyX={'hour'}
+      baseOptions={{ ...optionsImpressions }}
+      formatX={(x) => `0${x}:00`.slice(-5)}
+      tooltipX={(x) => `0${x}:00`.slice(-5)}
+      formatToolTip={formatToolTip}
+    />
+  ))
+  .add('Clicks chart', () => (
+    <LChart
+      type={'hourly'}
+      data={hourlyData}
+      dataKeyX={'hour'}
+      baseOptions={{ ...optionsClicks }}
+      formatX={(x) => `0${x}:00`.slice(-5)}
+      tooltipX={(x) => `0${x}:00`.slice(-5)}
+      formatToolTip={formatToolTip}
+    />
+  ));
