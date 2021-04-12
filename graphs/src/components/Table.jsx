@@ -4,7 +4,7 @@ export default function Table(props) {
       <header className='table_header'>
       <button>All Time</button>
       <div>
-        <label for='week'>Choose a week:</label>
+        <label htmlFor='week'>Choose a week:</label>
 
         <input
           type='week'

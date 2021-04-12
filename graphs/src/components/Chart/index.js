@@ -1,10 +1,10 @@
-import {useState,useEffect} from 'react'
+import { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import LChart from './LChart';
 import dayjs from 'dayjs';
-import axios from 'axios'
+import axios from 'axios';
 
 export default function Chart(props) {
-
   const [weeklyData, setWeeklyData] = useState();
   const [hourlyData, setHourlyData] = useState();
   const [chartType, setChartType] = useState('weekly');
@@ -25,15 +25,15 @@ export default function Chart(props) {
     YAxisLabel: ',000',
   };
 
-  const [chartOptions, setChartOptions] = useState(optionsClicks)
+  const [chartOptions, setChartOptions] = useState(optionsClicks);
 
-useEffect(() => {
-  axios.get('stats/daily').then(res => setWeeklyData(res.data))
-},[])
+  useEffect(() => {
+    axios.get('stats/daily').then((res) => setWeeklyData(res.data));
+  }, []);
 
-const getHourlyData = () => {
-  return axios.get('stats/hourly').then(res => setHourlyData(res.data))
-}
+  const getHourlyData = () => {
+    return axios.get('stats/hourly').then((res) => setHourlyData(res.data));
+  };
 
   const dataBuffer = [
     {
@@ -108,56 +108,84 @@ const getHourlyData = () => {
     .toString()
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
   let totalRevenue = data.reduce((acc, obj) => acc + obj.revenue, 0);
-  totalRevenue = Math.round(totalRevenue);
+  totalRevenue = formatNumber(Math.round(totalRevenue));
 
-  
+  const [selected, setSelected] = useState('clicks');
 
   return (
     <div className='chart_area'>
-      {weeklyData && <>
-      <div className='stat_boxes'>
-        <div className='statbox'>
-          Clicks:
-          <span>{totalClicks}</span>
-        </div>
-        <div className='statbox'>
-          Impressions:
-          <span>{totalImpressions}</span>
-        </div>
-        <div className='statbox'>
-          Revenue:
-          <span>{totalRevenue}</span>
-        </div>
-      </div>
-      <div className='chart_type'>
-        <button>Hourly</button>
-        <button>Daily</button>
-      </div>
-      <div className='chart_option'>
-        <button className='clicks_option'>Clicks</button>
-        <button className='impressions_option'>Impressions</button>
-        <button className='revenue_option'>Revenue</button>
-      </div>
-      <div className='chart_comparison'>
-        vs &nbsp;
-        <select name='comparison'>
-          <option selected value>
+      {weeklyData && (
+        <>
+          <div className='weekly_period'>
             {' '}
-            -- select an option --{' '}
-          </option>
-        </select>
-      </div>
-
-      <LChart
-        type={'weekly'}
-        baseOptions={chartOptions}
-        data={weeklyData}
-        dataKeyX={'date'}
-        formatX={dateConvert}
-        tooltipX={fullDateConvert}
-        formatToolTip={formatToolTip}
-      />
-      </>}
+            {fullDateConvert(weeklyData[0].date)} -{' '}
+            {fullDateConvert(weeklyData[weeklyData.length - 1].date)}
+          </div>
+          <div className='stat_boxes'>
+            <div className='statbox'>
+              Clicks:
+              <span>{totalClicks}</span>
+            </div>
+            <div className='statbox'>
+              Impressions:
+              <span>{totalImpressions}</span>
+            </div>
+            <div className='statbox'>
+              Revenue:
+              <span>{totalRevenue}</span>
+            </div>
+          </div>
+          <div className='chart_option'>
+            <button
+              className={classNames('clicks_option', 'option_btn', {
+                selected: selected === 'clicks',
+              })}
+            >
+              Clicks
+            </button>
+            <button
+              className={classNames('impressions_option', 'option_btn', {
+                selected: selected === 'impressions',
+              })}
+            >
+              Impressions
+            </button>
+            <button
+              className={classNames('revenue_option', 'option_btn', {
+                selected: selected === 'revenue',
+              })}
+            >
+              Revenue
+            </button>
+          </div>
+          <div className='chart_display'>
+            <div className='chart_comparison'>
+              compare vs &nbsp;
+              <select name='comparison'>
+                <option selected value>
+                  {' '}
+                  -- select an option --{' '}
+                </option>
+              </select>
+              <div className='chart_type'>
+                <button>Hourly</button>
+                <button>Daily</button>
+              </div>
+            </div>
+            {chartType === 'weekly' && (
+              <LChart
+                type={'weekly'}
+                baseOptions={chartOptions}
+                data={weeklyData}
+                dataKeyX={'date'}
+                formatX={dateConvert}
+                tooltipX={fullDateConvert}
+                formatToolTip={formatToolTip}
+              />
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }
