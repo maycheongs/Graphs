@@ -6,7 +6,7 @@ A small react + express project using Redis, Recharts and Leaflet to display rat
 
 Runs the react start script
 
-### `npm run server
+### `npm run server`
 
 Launches the backend express server - view endpoints using localhost:8080 e.g. http://localhost:8080/stats/daily
 
