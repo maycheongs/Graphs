@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const pg = require('pg');
 const rateLimiter = require('./rateLimiter2');
-console.log('pguser', process.env.PGUSER)
+console.log('pguser', process.env.PGUSER);
 const app = express();
 // configs come from standard PostgreSQL env vars
 // https://www.postgresql.org/docs/9.6/static/libpq-envars.html
@@ -12,7 +12,7 @@ const pool = new pg.Pool();
 const queryHandler = (req, res, next) => {
   pool
     .query(req.sqlQuery)
-    .then((r) => {     
+    .then((r) => {
       return res.json(r.rows || []);
     })
     .catch(next);
@@ -78,6 +78,30 @@ app.get(
     GROUP BY date
     ORDER BY date
     LIMIT 7;
+  `;
+    return next();
+  },
+  queryHandler
+);
+
+app.get(
+  '/poi/daily',
+  (req, res, next) => {
+    req.sqlQuery = `
+    SELECT name, hourly_stats.date as date, 
+    SUM(impressions) as impressions, 
+    SUM(clicks) as clicks,
+    SUM(revenue) as revenue, 
+    events
+    FROM public.hourly_stats
+    LEFT JOIN (select poi_id,date,SUM(events) as events
+        FROM public.hourly_events            
+        GROUP BY poi_id,date
+        ORDER BY date) AS event_table on event_table.poi_id = hourly_stats.poi_id AND event_table.date = hourly_stats.date
+    JOIN public.poi on hourly_stats.poi_id = poi.poi_id        
+    GROUP BY name,hourly_stats.date,events
+    ORDER BY date
+    LIMIT 28;
   `;
     return next();
   },
