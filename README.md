@@ -1,6 +1,6 @@
 # Advertising data views
 
-WIP - A small react + express project using Redis (for API rate limiting), Recharts and Leaflet to display AWS based advertising data (1 week - clicks, impressions,revenue) with POI (point of interest) cluster map.
+WIP - A small react + express project using Redis (for API rate limiting), Recharts and Leaflet to display AWS-hosted advertising data i.e. clicks, impressions,revenue with POI (point of interest) cluster map.
 
 ### `npm start`
 
